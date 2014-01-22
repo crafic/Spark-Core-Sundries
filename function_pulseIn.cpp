@@ -6,7 +6,7 @@
  * input pulse hasn't finished.
  *
  * Input: Trigger Pin, Trigger State
- * Output: Pulse Length in Microseconds (10uS to 1S)
+ * Output: Pulse Length in Microseconds (10uS to 10S)
  *
  */
 
