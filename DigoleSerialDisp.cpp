@@ -1,12 +1,41 @@
-//
-// Digole.h
-//
+/* *********************************************************************************** */
+/* Digole Serial Display Library - Version 001 - Copyright 2014 Timothy Brown / Digole */
+/* *********************************************************************************** */
+/* Setup the class for your display *before* void setup():                             */
+/*                                                                                     */
+/* DigoleSerialDisp digole(arguments);                                                 */
+/*                                                                                     */
+/* Arguments:                                                                          */
+/*                                                                                     */
+/* [SPI] Chip Select Pin (SS for the default pin, 255 if CS is hardwired low.)         */
+/* [SoftSPI] Data Pin, Clock Pin, Chip Select Pin (255 if CS is hardwired low.)        */
+/* [I2C] Data Pin, Clock Pin                                                           */
+/* [UART] TX Pin                                                                       */
+/*                                                                                     */
+/* To use, call digole.begin(); *inside* void setup(); (or loop) to start the display. */
+/* You may also call digole.end(); to release the pins and clear the I2C/SPI/UART bus. */
+/* *********************************************************************************** */
+
+/* ************************************************* */
+/* !Important! Change XXXX to the desired interface: */
+/*              SPI, SoftSPI, I2C, UART              */
+/* ************************************************* */
+
+#define _Digole_Serial_XXXX
+
+/* **************************** */
+/* *** Begin Digole Library *** */
+/* **************************** */
+
+// ************
+// * Digole.h *
+// ************
 
 class DigoleSerialDisp : public Print {
 public:
 
 //
-// UART/I2C/SPI Functions
+// UART/I2C/SoftSPI/SPI Functions
 //
 
 #if defined(_Digole_Serial_SPI_)
@@ -15,15 +44,15 @@ public:
         _Comdelay = 10;
         _SS = pinSS;
         
-    }
+	}
     
     void begin(void) {
         
         pinMode(_SS, OUTPUT);
         digitalWrite(_SS, HIGH);
         SPI.setBitOrder(MSBFIRST);
-        SPI.setClockDivider(SPI_CLOCK_DIV64);
-        SPI.setDataMode(0);
+        SPI.setClockDivider(SPI_CLOCK_DIV32);
+        SPI.setDataMode(1);
         SPI.begin();
         
     }
@@ -36,9 +65,9 @@ public:
     size_t write(uint8_t value) {
         
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
-        SPI.setDataMode(3);
+        //SPI.setDataMode(3);
         SPI.transfer(value);
-        SPI.setDataMode(0);
+        //SPI.setDataMode(0);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
         return 1;
     }
@@ -75,9 +104,7 @@ public:
     size_t write(uint8_t value) {
         
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
-        delayMicroseconds(1);
         shiftOut(_Data, _Clock, MSBFIRST, value);
-        delayMicroseconds(1);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
         return 1;
     }
@@ -203,9 +230,9 @@ public:
     }
     
     //
-    // Header Functions
+    // Text LCD Adapter Functions
     //
-    
+
     void disableCursor(void) {
         Print::print("CS0");
     }
@@ -296,8 +323,11 @@ public:
     }
     
     void preprint(void);
-    /*----------Functions for Graphic LCD/OLED adapters only---------*/
-    //the functions in this section compatible with u8glib
+
+	//
+	// Graphic LCD/OLED Adapter Functions (U8GLIB Compatible)
+	//
+
     void drawBitmap(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap);
     void drawBitmap256(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap);
     void drawBitmap262K(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap);
@@ -317,8 +347,11 @@ public:
     void drawLineTo(uint8_t x, uint8_t y);
     void drawHLine(uint8_t x, uint8_t y, uint8_t w);
     void drawVLine(uint8_t x, uint8_t y, uint8_t h);
-    //-------------------------------
-    //special functions for our adapters
+
+	//
+	// Graphic LCD/OLED Adapter Functions (Special Functions)
+	//
+
     void setFont(uint8_t font); //set font, availale: 6,10,18,51,120,123, user font: 200-203
     void nextTextLine(void); //got to next text line, depending on the font size
     void setColor(uint8_t); //set color for graphic function
@@ -339,9 +372,9 @@ private:
 
 };
 
-//
-// Digole.cpp
-//
+// **************
+// * Digole.cpp *
+// **************
 
 void DigoleSerialDisp::preprint(void) {
     //write((uint8_t)0);
@@ -350,6 +383,9 @@ void DigoleSerialDisp::preprint(void) {
 
 /*----------Functions for Graphic LCD/OLED adapters only---------*/
 void DigoleSerialDisp::drawBitmap(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap) {
+	#if defined(_Digole_Serial_SPI_)
+	delay(50);
+	#endif
     uint8_t i = 0;
     if ((w & 7) != 0)
         i = 1;
@@ -522,6 +558,9 @@ void DigoleSerialDisp::uploadUserFont(int lon, const unsigned char *data, uint8_
 }
 
 void DigoleSerialDisp::drawBitmap256(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap) {
+	#if defined(_Digole_Serial_SPI_)
+	delay(50);
+	#endif
     Print::print("EDIM1");
     write(x);
     write(y);
@@ -536,6 +575,9 @@ void DigoleSerialDisp::drawBitmap256(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
 }
 
 void DigoleSerialDisp::drawBitmap262K(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap) {
+	#if defined(_Digole_Serial_SPI_)
+	delay(50);
+	#endif
     Print::print("EDIM3");
     write(x);
     write(y);
