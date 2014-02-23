@@ -39,7 +39,7 @@ void setup() {
 	
 	digole.begin();
 	delay(500);
-	digole.clearScreen;
+	digole.clearScreen();
 	delay(50);
 	digole.print("Hello World!");
 
