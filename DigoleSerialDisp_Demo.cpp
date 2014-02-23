@@ -9,7 +9,7 @@
 /*                                                                                     */
 /* [SPI] Chip Select Pin (SS for the default pin, 255 if CS is hardwired low.)         */
 /* [SoftSPI] Data Pin, Clock Pin, Chip Select Pin (255 if CS is hardwired low.)        */
-/* [I2C] Data Pin, Clock Pin                                                           */
+/* [I2C] Address of the Display (Default: 0x27)                                        */
 /* [UART] TX Pin                                                                       */
 /*                                                                                     */
 /* To use, call digole.begin(); *inside* void setup(); (or loop) to start the display. */
