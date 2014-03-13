@@ -6,6 +6,7 @@
 // * DigoleSerialDisp.cpp *
 // ************************
 
+#include "application.h"
 #include "DigoleSerialDisp.h"
 
 void DigoleSerialDisp::preprint(void) {

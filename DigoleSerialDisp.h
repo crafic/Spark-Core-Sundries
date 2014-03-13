@@ -23,7 +23,7 @@ public:
 DigoleSerialDisp(unsigned long baud) //UART set up
     {
         _Baud = baud;
-        _Comdelay=1;
+        _Comdelay=0;
     }
 
     void begin(void) {
@@ -46,7 +46,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     DigoleSerialDisp(uint8_t add)
     {
         _I2Caddress = add;
-        _Comdelay=15;
+        _Comdelay=10;
     }
 
 	void begin(void) {
@@ -76,7 +76,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         pinMode(_SS, OUTPUT);
         digitalWrite(_SS, HIGH);
         SPI.setBitOrder(MSBFIRST);
-        SPI.setClockDivider(SPI_CLOCK_DIV16);
+        SPI.setClockDivider(SPI_CLOCK_DIV32);
         SPI.setDataMode(1);
         SPI.begin();
         
@@ -90,9 +90,9 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     size_t write(uint8_t value) {
         
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
-        delayMicroseconds(1);
+        //delayMicroseconds(1); *Upped SPI_CLOCK_DIV to 32 and removed CS delay*
         SPI.transfer(value);
-        delayMicroseconds(1);
+        //delayMicroseconds(1);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
         return 1;
     }
@@ -101,7 +101,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
 #if defined(_Digole_Serial_SoftSPI_)
     DigoleSerialDisp(uint8_t pinData, uint8_t pinClock, uint8_t pinSS) {
         
-        _Comdelay = 1;
+        _Comdelay = 5;
         
         _Clock = pinClock;
         _Data = pinData;
@@ -142,65 +142,65 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     size_t println(const String &v) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(const char v[]) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(char v) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(double v, int base = 2) {
         preprint();
         Print::println(v, base);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(const Printable& v) {
         preprint();
         Print::println(v);
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
     size_t println(void) {
-        Print::println("\x0dTRT");
+        Print::println("TRT");
     }
 
 
