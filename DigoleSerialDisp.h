@@ -1,5 +1,6 @@
 /* *********************************************************************************** */
-/* Digole Serial Display Library - Version 005 - Copyright 2014 Timothy Brown / Digole */
+/* Digole Serial Display Library - Version 005					       */
+/* Copyright 2014 Timothy Brown / Paul Kourany / Digole 			       */
 /* *********************************************************************************** */
 
 // **********************
@@ -139,72 +140,72 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     // Print Functions
     //
 
-    size_t println(const String &v) {
+    void println(const String &v) {
         preprint();
         Print::println(v);
         Print::println("TRT");
     }
 
-    size_t println(const char v[]) {
+    void println(const char v[]) {
         preprint();
         Print::println(v);
         Print::println("TRT");
     }
 
-    size_t println(char v) {
+    void println(char v) {
         preprint();
         Print::println(v);
         Print::println("TRT");
     }
 
-    size_t println(unsigned char v, int base = DEC) {
+    void println(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
         Print::println("TRT");
     }
 
-    size_t println(int v, int base = DEC) {
+    void println(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
         Print::println("TRT");
     }
 
-    size_t println(unsigned int v, int base = DEC) {
+    void println(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
         Print::println("TRT");
     }
 
-    size_t println(long v, int base = DEC) {
+    void println(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
         Print::println("TRT");
     }
 
-    size_t println(unsigned long v, int base = DEC) {
+    void println(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
         Print::println("TRT");
     }
 
-    size_t println(double v, int base = 2) {
+    void println(double v, int base = 2) {
         preprint();
         Print::println(v, base);
         Print::println("TRT");
     }
 
-    size_t println(const Printable& v) {
+    void println(const Printable& v) {
         preprint();
         Print::println(v);
         Print::println("TRT");
     }
 
-    size_t println(void) {
+    void println(void) {
         Print::println("TRT");
     }
 
 
-    size_t print(const String &v) {
+    void print(const String &v) {
         preprint();
         Print::println(v);
     }
@@ -214,42 +215,42 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         Print::println(v);
     }
 
-    size_t print(char v) {
+    void print(char v) {
         preprint();
         Print::println(v);
     }
 
-    size_t print(unsigned char v, int base = DEC) {
+    void print(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(int v, int base = DEC) {
+    void print(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(unsigned int v, int base = DEC) {
+    void print(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(long v, int base = DEC) {
+    void print(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(unsigned long v, int base = DEC) {
+    void print(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(double v, int base = 2) {
+    void print(double v, int base = 2) {
         preprint();
         Print::println(v, base);
     }
 
-    size_t print(const Printable& v) {
+    void print(const Printable& v) {
         preprint();
         Print::println(v);
     }
@@ -372,6 +373,14 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     void drawLineTo(uint8_t x, uint8_t y);
     void drawHLine(uint8_t x, uint8_t y, uint8_t w);
     void drawVLine(uint8_t x, uint8_t y, uint8_t h);
+    void drawRoundRect(int x1, int y1, int x2, int y2);
+    void fillRoundRect(int x1, int y1, int x2, int y2);
+    void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
+    void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
+    void drawArc(int x, int y, int r, int startAngle, int endAngle, int thickness);
+    void drawPie(int x, int y, int r, int startAngle, int endAngle);
+    void drawEllipse(int CX, int CY, int XRadius, int YRadius);
+    void drawFilledEllipse(int CX, int CY, int XRadius, int YRadius);
 
 	//
 	// Graphic LCD/OLED Adapter Functions (Special Functions)
@@ -382,6 +391,8 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     void setColor(uint8_t); //set color for graphic function
     void backLightOn(void); //Turn on back light
     void backLightOff(void); //Turn off back light
+    void setScreenOn(void);  //Turn screen on 
+    void setScreenOff(void); //Turn screen off to save power
     void directCommand(uint8_t d); //send command to LCD drectly
     void directData(uint8_t d); //send data to LCD drectly
     void moveArea(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, char xoffset, char yoffset); //move a area of screen to another place
@@ -395,6 +406,9 @@ private:
 	uint8_t _Data;
 	uint8_t _SS;
 	uint8_t _Comdelay;
+
+    void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
+    void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
 
 };
 
