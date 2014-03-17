@@ -13,6 +13,17 @@
 #define _TEXT_ 0
 #define _GRAPH_ 1
 
+// Uncommment to match Digole display used
+const int max_x = 160;			// Digole 1.8" Colour OLED
+const int max_y = 128;
+
+//const int max_x = 96;			// Digole 0.96" Colour OLED
+//const int max_y = 64;
+
+//const int max_x = 128;		// Digole monochromr LCD displays
+//const int max_y = 64;
+
+
 class DigoleSerialDisp : public Print {
 public:
 
