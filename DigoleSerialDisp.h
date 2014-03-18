@@ -13,15 +13,7 @@
 #define _TEXT_ 0
 #define _GRAPH_ 1
 
-// Uncommment to match Digole display used
-const int max_x = 160;			// Digole 1.8" Colour OLED
-const int max_y = 128;
-
-//const int max_x = 96;			// Digole 0.96" Colour OLED
-//const int max_y = 64;
-
-//const int max_x = 128;		// Digole monochromr LCD displays
-//const int max_y = 64;
+enum displayDims { OLED160x128, OLED96x64, LCD128x64 };
 
 
 class DigoleSerialDisp : public Print {
@@ -38,12 +30,14 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         _Comdelay=0;
     }
 
-    void begin(void) {
+    void begin(displayDims size) {
         Serial1.begin(9600);
         Serial1.print("SB");
         Serial1.println(_Baud);
         delay(100);
         Serial1.begin(_Baud);
+        
+        setDisplaySize(size);
     }
 
     void end(void) {
@@ -61,8 +55,10 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         _Comdelay=10;
     }
 
-	void begin(void) {
+	void begin(displayDims size) {
 		Wire.begin();
+        
+        setDisplaySize(size);
     }
 
     void end(void) {
@@ -83,7 +79,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         
 	}
     
-    void begin(void) {
+    void begin(displayDims size) {
         
         pinMode(_SS, OUTPUT);
         digitalWrite(_SS, HIGH);
@@ -91,7 +87,8 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         SPI.setClockDivider(SPI_CLOCK_DIV32);
         SPI.setDataMode(1);
         SPI.begin();
-        
+
+        setDisplaySize(size);
     }
     
     void end(void) {
@@ -121,7 +118,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         
     }
     
-    void begin(void) {
+    void begin(displayDims size) {
         
         pinMode(_Clock, OUTPUT);
         pinMode(_Data, OUTPUT);
@@ -130,6 +127,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         digitalWrite(_Data, LOW);
         digitalWrite(_SS, HIGH);
         
+        setDisplaySize(size);
     }
     
     void end(void) {
@@ -397,6 +395,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
 	// Graphic LCD/OLED Adapter Functions (Special Functions)
 	//
 
+    void setDisplaySize(displayDims size);  //set display dimmensions: OLED160x128, OLED96x64, LCD128x64
     void setFont(uint8_t font); //set font, availale: 6,10,18,51,120,123, user font: 200-203
     void nextTextLine(void); //got to next text line, depending on the font size
     void setColor(uint8_t); //set color for graphic function
@@ -418,8 +417,11 @@ private:
 	uint8_t _SS;
 	uint8_t _Comdelay;
 
-    void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
-    void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
+    	int _max_x;
+    	int _max_y;
+    
+    	void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
+    	void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
 
 };
 
