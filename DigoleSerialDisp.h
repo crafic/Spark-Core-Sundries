@@ -1,5 +1,5 @@
 /* *********************************************************************************** */
-/* Digole Serial Display Library - Version 005					       */
+/* Digole Serial Display Library - Version 006					       */
 /* Copyright 2014 Timothy Brown / Paul Kourany / Digole 			       */
 /* *********************************************************************************** */
 
