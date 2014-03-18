@@ -1,10 +1,41 @@
-//#define _Digole_Serial_SPI_           //Select Hardware SPI communications
-//#define _Digole_Serial_SoftSPI_       //Select SOFT SPI communications
-//#define _Digole_Serial_I2C_           //Select I2C communications
-#define _Digole_Serial_UART_            //Select USART (Serial1 or Serial2) communications
+/* *********************************************************************************** */
+/* Digole Serial Display Library - Version 006                                         */
+/* Copyright 2014 Timothy Brown / Paul Kourany / Digole                                */
+/* *********************************************************************************** */
+/* Setup the class for your display *before* void setup():                             */
+/*                                                                                     */
+/* DigoleSerialDisp digole(arguments);                                                 */
+/*                                                                                     */
+/* Arguments:                                                                          */
+/*                                                                                     */
+/* [SPI] Chip Select Pin (SS for the default pin, 255 if CS is hardwired low.)         */
+/* [SoftSPI] Data Pin, Clock Pin, Chip Select Pin (255 if CS is hardwired low.)        */
+/* [I2C] Address of the Display (Default: 0x27)                                        */
+/* [UART] Baud Rate [9600 to 115200]                                                   */
+/*                                                                                     */
+/* To use, call digole.begin(); *inside* void setup(); (or loop) to start the display. */
+/* You may also call digole.end(); to release the pins and clear the I2C/SPI/UART bus. */
+/*                                                                                     */
+/* *********************************************************************************** */
 
-// This #include statement was automatically added by the Spark IDE.
-#include "digoleSerialDisp.h"
+/* Uncomment the #define below for the desired interface: SPI, SoftSPI, I2C, UART. */
+
+//#define _Digole_Serial_SPI_
+//#define _Digole_Serial_SoftSPI_
+//#define _Digole_Serial_I2C_
+#define _Digole_Serial_UART_
+
+/* Be sure to #include "DigoleSerialDisp.h" *after* the #define above or your compile will fail. */
+
+#include "DigoleSerialDisp.h"
+
+/* Below are sane defaults for the various interfaces. Uncomment one and customize as needed! */
+
+//DigoleSerialDisp digole(A2); //SPI
+//DigoleSerialDisp digole(D4, D3, D2); //SoftSPI
+//DigoleSerialDisp digole(0x27); //I2C
+DigoleSerialDisp digole(115200); //UART
+
 
 //Colours defined as 8-bit value RRRG GGBB
 #define VGA_BLACK   0x00
@@ -20,20 +51,19 @@
 const int max_x = 160;	//screen width in pixels
 const int max_y = 128;	//screen Hight in pixels
 
-//DigoleSerialDisp mydisp(D2, D3, SS);      	//SOFT SPI setup - specify DATA, CLOCK, SS pins
-//DigoleSerialDisp mydisp(SS);              		//Hardware SPI setup - specify SS pin
-//DigoleSerialDisp mydisp('\x27');    			//I2C specified - specify Pointer to Wire object, I2C address of Digole
-DigoleSerialDisp mydisp(&Serial1, 115200);	//USART (Serial 1 or 2) - specify &Serial1 or &Serial2 and baudrate
- 
+
 int random(int maxRand) {
     return rand() % maxRand;
 }
 
 
+/* *********************************************************************************** */
+/* THIS DEMO IS WRITTEN FOR THE DIGOLE COLOR OLED 160x128                              */
+/* *********************************************************************************** */
 
  
 void setup() {
-  mydisp.begin(OLED160x128);
+  mydisp.begin(OLED160x128);  //Set display to color OLED 160x128
   mydisp.backLightOn();
   mydisp.setColor(1);
 }
@@ -123,6 +153,7 @@ void loop() {
   delay(1000);
   mydisp.clearScreen(); //CLear screen
 
+//Draw a VU style meter and moving needle
   mydisp.setColor(VGA_BLUE);
   mydisp.drawFrame(0, 0, 160, 128);
 
@@ -162,6 +193,9 @@ void loop() {
     delay(40-i);
   }
 
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+  
 // Draw some random ellipses
   for (int i=0; i<50; i++)
   {
@@ -174,7 +208,7 @@ void loop() {
     delay(100);
   }
 
-  delay(2000);
+  delay(1000);
   mydisp.clearScreen(); //CLear screen
   
 // Draw some random filled ellipses
