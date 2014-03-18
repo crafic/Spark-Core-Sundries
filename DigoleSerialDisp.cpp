@@ -124,6 +124,28 @@ void DigoleSerialDisp::nextTextLine(void) {
     Print::print("TRT");
 }
 
+void DigoleSerialDisp::setDisplaySize(displayDims size) {
+    switch(size)
+    {
+        case OLED160x128:
+            _max_x = 160;
+            _max_y = 128;
+        break;
+        case OLED96x64:
+            _max_x = 96;
+            _max_y = 64;
+        break;
+        case LCD128x64:
+            _max_x = 128;
+            _max_y = 64;
+        break;
+        default:
+            _max_x = 128;
+            _max_y = 64;
+        break;
+    }
+}
+
 void DigoleSerialDisp::setFont(uint8_t font) {
     Print::print("SF");
     write(font);
