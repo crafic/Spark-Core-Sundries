@@ -219,7 +219,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         Print::println(v);
     }
 
-    size_t print(const char v[]) {
+    void print(const char v[]) {
         preprint();
         Print::println(v);
     }
