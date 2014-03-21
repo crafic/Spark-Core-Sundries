@@ -497,25 +497,25 @@ void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill
     
 	if (fill == 0) {    //Not fill so use pixels for outline
 	    //For each quadrant, if point is outside display area, don't draw it
-	    if ((_CXaddX <= max_x) || (_CYaddY <= max_y))               
+	    if ((_CXaddX <= _max_x) || (_CYaddY <= _max_y))               
 		    drawPixel(_CXaddX, _CYaddY);                //{point in quadrant 1}
 		    
-	    if ((_CXsubX >= 0) || (_CYaddY <= max_y))
+	    if ((_CXsubX >= 0) || (_CYaddY <= _max_y))
 		    drawPixel(_CXsubX, _CYaddY);                //{point in quadrant 2}
 
 	    if ((_CXsubX >= 0) || (_CYaddY >= 0))
 		    drawPixel(_CXsubX, _CYsubY);                //{point in quadrant 3}
 
-	    if ((_CXaddX <= max_x) || (_CYaddY >= 0))
+	    if ((_CXaddX <= _max_x) || (_CYaddY >= 0))
 		    drawPixel(_CXaddX, _CYsubY);                //{point in quadrant 4}
 	}
 	else {
 		// to fill rather than draw a line, plot between the points
 		// Constrain the endpoits to inside the display area
-        _CXaddX = constrain(_CXaddX, 0, max_x); 
-        _CXsubX = constrain(_CXsubX, 0, max_x);
-        _CYaddY = constrain(_CYaddY, 0, max_y);
-        _CYsubY = constrain(_CYsubY, 0, max_y);
+        _CXaddX = constrain(_CXaddX, 0, _max_x); 
+        _CXsubX = constrain(_CXsubX, 0, _max_x);
+        _CYaddY = constrain(_CYaddY, 0, _max_y);
+        _CYsubY = constrain(_CYsubY, 0, _max_y);
 
         drawLine(_CXaddX, _CYaddY, _CXsubX, _CYaddY);
 		drawLine(_CXsubX, _CYsubY, _CXaddX, _CYsubY);
