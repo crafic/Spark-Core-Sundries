@@ -63,163 +63,163 @@ int random(int maxRand) {
 
  
 void setup() {
-  mydisp.begin(OLED160x128);  //Set display to color OLED 160x128
-  mydisp.backLightOn();
-  mydisp.setColor(1);
+  digole.begin(OLED160x128);  //Set display to color OLED 160x128
+  digole.backLightOn();
+  digole.setColor(1);
 }
  
 void loop() {
 
   int x1,x2,x3,y1,y2,y3,r,as,ae;
 
-  mydisp.clearScreen(); //CLear screen
-  mydisp.disableCursor();
+  digole.clearScreen(); //CLear screen
+  digole.disableCursor();
 
 // Draw some random triangles
   for (int i=0; i<50; i++)
   { 
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=random(max_x);
     y1=random(max_y);
     x2=random(max_x);
     y2=random(max_y);
-    mydisp.drawRoundRect(x1, y1, x2, y2);
+    digole.drawRoundRect(x1, y1, x2, y2);
     delay(10);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
 
 // Draw some random triangles
   for (int i=0; i<50; i++)
   {
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=random(max_x);
     y1=random(max_y);
     x2=random(max_x);
     y2=random(max_y);
-    mydisp.fillRoundRect(x1, y1, x2, y2);
+    digole.fillRoundRect(x1, y1, x2, y2);
     delay(15);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
 
 // Draw some random triangles
   for (int i=0; i<50; i++)
   {
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=random(max_x);
     y1=random(max_y);
     x2=random(max_x);
     y2=random(max_y);
     x3=random(max_x);
     y3=random(max_y);
-    mydisp.drawTriangle(x1, y1, x2, y2, x3, y3);
+    digole.drawTriangle(x1, y1, x2, y2, x3, y3);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
 
 // Draw some random filled triangles
   for (int i=0; i<50; i++)
   {
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=random(max_x);
     y1=random(max_y);
     x2=random(max_x);
     y2=random(max_y);
     x3=random(max_x);
     y3=random(max_y);
-    mydisp.fillTriangle(x1, y1, x2, y2, x3, y3);
+    digole.fillTriangle(x1, y1, x2, y2, x3, y3);
     delay(15);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
 
 // Draw some random pies
   for (int i=0; i<50; i++)
   {
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=30+random(max_x-60);
     y1=30+random(max_y-60);
     r=10+random(20);
     as=random(360);
-    ae=random(360);    mydisp.drawPie(x1, y1, r, as, ae);
+    ae=random(360);    digole.drawPie(x1, y1, r, as, ae);
     delay(10);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
 
 //Draw a VU style meter and moving needle
-  mydisp.setColor(VGA_BLUE);
-  mydisp.drawFrame(0, 0, 160, 128);
+  digole.setColor(VGA_BLUE);
+  digole.drawFrame(0, 0, 160, 128);
 
-  mydisp.setColor(VGA_LIME);
-  mydisp.drawArc(80,128,108,-40,40,3);
+  digole.setColor(VGA_LIME);
+  digole.drawArc(80,128,108,-40,40,3);
   for (int i=-40; i<=40; i+=8)
-    mydisp.drawArc(80,128,103,i,i,5);
+    digole.drawArc(80,128,103,i,i,5);
 
   int l = 0;
   for (int i=0; i>=-40; i-=1)
   {
-    mydisp.setColor(VGA_BLACK);
-    mydisp.drawArc(80,128,55,l,l,75);
+    digole.setColor(VGA_BLACK);
+    digole.drawArc(80,128,55,l,l,75);
     l=i;
-    mydisp.setColor(VGA_YELLOW);
-    mydisp.drawArc(80,128,55,i,i,75);
+    digole.setColor(VGA_YELLOW);
+    digole.drawArc(80,128,55,i,i,75);
     delay(40-abs(i));
   }
 
   for (int i=-40; i<=40; i+=1)
   {
-    mydisp.setColor(VGA_BLACK);
-    mydisp.drawArc(80,128,55,l,l,75);
+    digole.setColor(VGA_BLACK);
+    digole.drawArc(80,128,55,l,l,75);
     l=i;
-    mydisp.setColor(VGA_YELLOW);
-    mydisp.drawArc(80,128,55,i,i,75);
+    digole.setColor(VGA_YELLOW);
+    digole.drawArc(80,128,55,i,i,75);
     delay(40-abs(i));
   }
 
   for (int i=40; i>=0; i-=1)
   {
-    mydisp.setColor(VGA_BLACK);
-    mydisp.drawArc(80,128,55,l,l,75);
+    digole.setColor(VGA_BLACK);
+    digole.drawArc(80,128,55,l,l,75);
     l=i;
-    mydisp.setColor(VGA_YELLOW);
-    mydisp.drawArc(80,128,55,i,i,75);
+    digole.setColor(VGA_YELLOW);
+    digole.drawArc(80,128,55,i,i,75);
     delay(40-i);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
   
 // Draw some random ellipses
   for (int i=0; i<50; i++)
   {
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=20+random(max_x-20);
     y1=20+random(max_y-20);
     x2=5+random(30);
     y2=5+random(30);
-    mydisp.drawEllipse(x1, y1, x2, y2);
+    digole.drawEllipse(x1, y1, x2, y2);
     delay(100);
   }
 
   delay(1000);
-  mydisp.clearScreen(); //CLear screen
+  digole.clearScreen(); //CLear screen
   
 // Draw some random filled ellipses
   for (int i=0; i<50; i++)
   {
-    mydisp.setTrueColor(random(255), random(255), random(255));
+    digole.setTrueColor(random(255), random(255), random(255));
     x1=20+random(max_x-20);
     y1=20+random(max_y-20);
     x2=5+random(30);
     y2=5+random(30);
-    mydisp.drawFilledEllipse(x1, y1, x2, y2);
+    digole.drawFilledEllipse(x1, y1, x2, y2);
     delay(100);
   }
 
