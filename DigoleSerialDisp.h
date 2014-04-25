@@ -10,11 +10,15 @@
 #ifndef DigoleSerialDisp_h
 #define DigoleSerialDisp_h
 
+#include "application.h"
+
 #define _TEXT_ 0
 #define _GRAPH_ 1
 
-enum displayDims { OLED160x128, OLED96x64, LCD128x64 };
 
+// Set display width and height in pixels - common Digole display sizes are (HxW): 128x64, 160x128, 96x64
+#define DISP_W  160  //screen width in pixels
+#define DISP_H  128  //screen Hight in pixels
 
 class DigoleSerialDisp : public Print {
 public:
@@ -22,55 +26,7 @@ public:
 //
 // UART/I2C/SoftSPI/SPI Functions
 //
-#if defined(_Digole_Serial_UART_)
 
-DigoleSerialDisp(unsigned long baud) //UART set up
-    {
-        _Baud = baud;
-        _Comdelay=0;
-    }
-
-    void begin(displayDims size) {
-        Serial1.begin(9600);
-        Serial1.print("SB");
-        Serial1.println(_Baud);
-        delay(100);
-        Serial1.begin(_Baud);
-        
-        setDisplaySize(size);
-    }
-
-    void end(void) {
-    }
-
-    size_t write(uint8_t value) {
-        Serial1.write(value);
-        return 1;
-    }
-#endif
-#if defined(_Digole_Serial_I2C_)
-    DigoleSerialDisp(uint8_t add)
-    {
-        _I2Caddress = add;
-        _Comdelay=10;
-    }
-
-	void begin(displayDims size) {
-		Wire.begin();
-        
-        setDisplaySize(size);
-    }
-
-    void end(void) {
-    }
-
-    size_t write(uint8_t value) {
-        Wire.beginTransmission(_I2Caddress);
-        Wire.write(value);
-        Wire.endTransmission();
-        return 1;
-    }
-#endif
 #if defined(_Digole_Serial_SPI_)
     DigoleSerialDisp(uint8_t pinSS) {
         
@@ -79,7 +35,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         
 	}
     
-    void begin(displayDims size) {
+    void begin(void) {
         
         pinMode(_SS, OUTPUT);
         digitalWrite(_SS, HIGH);
@@ -87,8 +43,6 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         SPI.setClockDivider(SPI_CLOCK_DIV32);
         SPI.setDataMode(1);
         SPI.begin();
-
-        setDisplaySize(size);
     }
     
     void end(void) {
@@ -99,9 +53,11 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     size_t write(uint8_t value) {
         
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
-        //delayMicroseconds(1); *Upped SPI_CLOCK_DIV to 32 and removed CS delay*
+        delayMicroseconds(1);
+        //SPI.setDataMode(3);
         SPI.transfer(value);
-        //delayMicroseconds(1);
+        //SPI.setDataMode(0);
+        delayMicroseconds(1);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
         return 1;
     }
@@ -110,15 +66,14 @@ DigoleSerialDisp(unsigned long baud) //UART set up
 #if defined(_Digole_Serial_SoftSPI_)
     DigoleSerialDisp(uint8_t pinData, uint8_t pinClock, uint8_t pinSS) {
         
-        _Comdelay = 5;
+        _Comdelay = 1;
         
         _Clock = pinClock;
         _Data = pinData;
         _SS = pinSS;
-        
     }
     
-    void begin(displayDims size) {
+    void begin(void) {
         
         pinMode(_Clock, OUTPUT);
         pinMode(_Data, OUTPUT);
@@ -126,8 +81,6 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         digitalWrite(_Clock, LOW);
         digitalWrite(_Data, LOW);
         digitalWrite(_SS, HIGH);
-        
-        setDisplaySize(size);
     }
     
     void end(void) {
@@ -141,7 +94,57 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         PIN_MAP[_SS].gpio_peripheral->BRR = PIN_MAP[_SS].gpio_pin; //Low
         shiftOut(_Data, _Clock, MSBFIRST, value);
         PIN_MAP[_SS].gpio_peripheral->BSRR = PIN_MAP[_SS].gpio_pin; //High
+
         return 1;
+    }
+#endif
+
+#if defined(_Digole_Serial_I2C_)
+    DigoleSerialDisp(uint8_t add)
+    {
+        _I2Caddress = add;
+        _Comdelay=15;
+    }
+
+	void begin(void) {
+	    
+		Wire.begin();
+		
+    }
+
+    void end(void) {
+    }
+
+    size_t write(uint8_t value) {
+        Wire.beginTransmission(_I2Caddress);
+        Wire.write(value);
+        Wire.endTransmission();
+        return 1;
+    }
+#endif
+
+#if defined(_Digole_Serial_UART_)
+
+DigoleSerialDisp(USARTSerial *s, unsigned long baud) //UART set up
+    {
+        _mySerial = s;
+        _Baud = baud;
+        _Comdelay=2;
+        
+    }
+
+    size_t write(uint8_t value) {
+        _mySerial->write(value);
+        return 1; // assume sucess
+    }
+
+    void begin(displayDims size) {
+        _mySerial->begin(9600);
+        _mySerial->print("SB");
+        _mySerial->println(_Baud);
+        delay(100);
+        _mySerial->begin(_Baud);
+        
     }
 #endif
 
@@ -152,65 +155,65 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     void println(const String &v) {
         preprint();
         Print::println(v);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(const char v[]) {
         preprint();
         Print::println(v);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(char v) {
         preprint();
         Print::println(v);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(unsigned char v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(unsigned int v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(unsigned long v, int base = DEC) {
         preprint();
         Print::println(v, base);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(double v, int base = 2) {
         preprint();
         Print::println(v, base);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(const Printable& v) {
         preprint();
         Print::println(v);
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
     void println(void) {
-        Print::println("TRT");
+        Print::println("\x0dTRT");
     }
 
 
@@ -284,7 +287,7 @@ DigoleSerialDisp(unsigned long baud) //UART set up
         Print::println(s);
     }
 
-    void setPrintPos(uint8_t x, uint8_t y, uint8_t graph = _TEXT_) {
+    void setPrintPos(uint8_t x, uint8_t y, bool graph = false) {
         if (graph == false) {
             Print::print("TP");
             write(x);
@@ -391,11 +394,11 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     void drawEllipse(int CX, int CY, int XRadius, int YRadius);
     void drawFilledEllipse(int CX, int CY, int XRadius, int YRadius);
 
+
 	//
 	// Graphic LCD/OLED Adapter Functions (Special Functions)
 	//
 
-    void setDisplaySize(displayDims size);  //set display dimmensions: OLED160x128, OLED96x64, LCD128x64
     void setFont(uint8_t font); //set font, availale: 6,10,18,51,120,123, user font: 200-203
     void nextTextLine(void); //got to next text line, depending on the font size
     void setColor(uint8_t); //set color for graphic function
@@ -410,19 +413,20 @@ DigoleSerialDisp(unsigned long baud) //UART set up
     void uploadUserFont(int lon, const unsigned char *data, uint8_t sect); //upload user font
 
 private:
-	uint8_t _I2Caddress;
-	uint8_t _Baud;
-	uint8_t _Clock;
-	uint8_t _Data;
-	uint8_t _SS;
-	uint8_t _Comdelay;
+    unsigned long _Baud;
+    USARTSerial *_mySerial;
+    uint8_t _I2Caddress;
+    TwoWire *_myWire;
+    uint8_t _Clock;
+    uint8_t _Data;
+    uint8_t _SS;
+    uint8_t _Comdelay;
 
-    	int _max_x;
-    	int _max_y;
-    
-    	void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
-    	void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
+    const int _max_x = DISP_W;
+    const int _max_y = DISP_H;
+
+    void plotEllipse(int CX, int CY, int XRadius, int YRadius, int fill);
+    void plot4EllipsePoints(int CX, int CY, int X, int Y, int fill);
 
 };
-
 #endif

@@ -7,12 +7,11 @@
 // * DigoleSerialDisp.cpp *
 // ************************
 
-#include "application.h"
 #include "DigoleSerialDisp.h"
-
 #include <math.h>
 
 #define swap(a, b) { int16_t t = a; a = b; b = t; }
+
 const float pi = 3.1415926535;
 
 
@@ -23,6 +22,9 @@ void DigoleSerialDisp::preprint(void) {
 
 /*----------Functions for Graphic LCD/OLED adapters only---------*/
 void DigoleSerialDisp::drawBitmap(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap) {
+	#if defined(_Digole_Serial_SPI_)
+	delay(50);
+	#endif
     uint8_t i = 0;
     if ((w & 7) != 0)
         i = 1;
@@ -124,27 +126,6 @@ void DigoleSerialDisp::nextTextLine(void) {
     Print::print("TRT");
 }
 
-void DigoleSerialDisp::setDisplaySize(displayDims size) {
-    switch(size)
-    {
-        case OLED160x128:
-            _max_x = 160;
-            _max_y = 128;
-        break;
-        case OLED96x64:
-            _max_x = 96;
-            _max_y = 64;
-        break;
-        case LCD128x64:
-            _max_x = 128;
-            _max_y = 64;
-        break;
-        default:
-            _max_x = 128;
-            _max_y = 64;
-        break;
-    }
-}
 
 void DigoleSerialDisp::setFont(uint8_t font) {
     Print::print("SF");
@@ -227,6 +208,9 @@ void DigoleSerialDisp::uploadUserFont(int lon, const unsigned char *data, uint8_
 }
 
 void DigoleSerialDisp::drawBitmap256(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap) {
+	#if defined(_Digole_Serial_SPI_)
+	delay(50);
+	#endif
     Print::print("EDIM1");
     write(x);
     write(y);
@@ -241,6 +225,9 @@ void DigoleSerialDisp::drawBitmap256(uint8_t x, uint8_t y, uint8_t w, uint8_t h,
 }
 
 void DigoleSerialDisp::drawBitmap262K(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const uint8_t *bitmap) {
+	#if defined(_Digole_Serial_SPI_)
+	delay(50);
+	#endif
     Print::print("EDIM3");
     write(x);
     write(y);
@@ -264,8 +251,6 @@ void DigoleSerialDisp::setTrueColor(uint8_t r, uint8_t g, uint8_t b) {	//Set tru
 
 void DigoleSerialDisp::drawRoundRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 		swap(x1, x2);
 
@@ -288,8 +273,6 @@ void DigoleSerialDisp::drawRoundRect(int x1, int y1, int x2, int y2)
 
 void DigoleSerialDisp::fillRoundRect(int x1, int y1, int x2, int y2)
 {
-	int tmp;
-
 	if (x1>x2)
 		swap(x1, x2);
 
@@ -521,3 +504,4 @@ void DigoleSerialDisp::plot4EllipsePoints(int CX, int CY, int X, int Y, int fill
 		drawLine(_CXsubX, _CYsubY, _CXaddX, _CYsubY);
 	}
 }
+
