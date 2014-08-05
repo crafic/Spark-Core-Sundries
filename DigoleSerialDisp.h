@@ -37,12 +37,12 @@ public:
     
     void begin(void) {
         
-        pinMode(_SS, OUTPUT);
-        digitalWrite(_SS, HIGH);
+        //pinMode(_SS, OUTPUT);
+        //digitalWrite(_SS, HIGH);
         SPI.setBitOrder(MSBFIRST);
         SPI.setClockDivider(SPI_CLOCK_DIV32);
         SPI.setDataMode(1);
-        SPI.begin();
+        SPI.begin(_SS);
     }
     
     void end(void) {
