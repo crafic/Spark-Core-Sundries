@@ -199,6 +199,9 @@ void loop() {
     delay(40-i);
   }
 
+  delay(1000);
+  mydisp.clearScreen(); //CLear screen
+  
 // Draw some random ellipses
   for (int i=0; i<50; i++)
   {
