@@ -70,6 +70,7 @@ int random(int maxRand) {
  
 void setup() {
   Serial.begin(9600);
+  mydisp.begin();
   mydisp.backLightOn();
   mydisp.setColor(1);
 }
